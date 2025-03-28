@@ -1,5 +1,7 @@
 import pandas as pd
+import metaspace 
 from metaspace import SMInstance
+import argparse
 
 def download_dataset_results(dataset_id, database=None, version=None):
     """
@@ -87,15 +89,15 @@ def download_dataset_results(dataset_id, database=None, version=None):
     return results_df
 
 if __name__ == "__main__":
-    # Example usage
-    dataset_id = "2022-08-05_17h28m56s"
-    database = "KEGG"  # Optional, set to None to download all databases
-    version = None  # Optional, set to None to include all versions
+    parser = argparse.ArgumentParser(description="Download dataset results from METASPACE.")
+    parser.add_argument("--dataset_id", required=True, help="Dataset ID from METASPACE")
+    parser.add_argument("--database", required=False, default=None, help="Database name")
+    parser.add_argument("--version", required=False, default=None, help="Database version")
+    
+    args = parser.parse_args()
 
-    # Call the function to download results
-    data = download_dataset_results(dataset_id, database, version)
+    # 修正 None 的問題
+    database = None if args.database == "None" else args.database
+    version = None if args.version == "None" else args.version
 
-    # Print the resulting DataFrame's columns and column count
-    if data is not None:
-        print(data.columns)
-        print(f"Number of columns: {len(data.columns)}")
+    download_dataset_results(args.dataset_id, database, version)
